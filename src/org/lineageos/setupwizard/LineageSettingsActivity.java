@@ -83,8 +83,7 @@ public class LineageSettingsActivity extends BaseSetupWizardActivity {
         View metricsRow = findViewById(R.id.metrics);
         metricsRow.setOnClickListener(mMetricsClickListener);
         metricsRow.requestFocus();
-        String metricsHelpImproveLineage =
-                getString(R.string.services_help_improve_cm, os_name);
+        String metricsHelpImproveLineage = getString(R.string.services_help_improve_cm, os_name);
         String metricsSummary = getString(R.string.services_metrics_label,
                 metricsHelpImproveLineage, os_name, os_name);
         final SpannableStringBuilder metricsSpan = new SpannableStringBuilder(metricsSummary);
@@ -136,10 +135,10 @@ public class LineageSettingsActivity extends BaseSetupWizardActivity {
 
     private void updateMetricsOption() {
         final Bundle myPageBundle = mSetupWizardApp.getSettingsBundle();
-        boolean metricsChecked =
-                !myPageBundle.containsKey(KEY_SEND_METRICS) || myPageBundle
-                        .getBoolean(KEY_SEND_METRICS);
+        boolean metricsChecked = !myPageBundle.containsKey(KEY_SEND_METRICS) || myPageBundle
+                .getBoolean(KEY_SEND_METRICS);
         mMetrics.setChecked(metricsChecked);
+
         myPageBundle.putBoolean(KEY_SEND_METRICS, metricsChecked);
     }
 
@@ -148,9 +147,8 @@ public class LineageSettingsActivity extends BaseSetupWizardActivity {
             final Bundle myPageBundle = mSetupWizardApp.getSettingsBundle();
             boolean enabled = LineageSettings.System.getIntForUser(getContentResolver(),
                     LineageSettings.System.FORCE_SHOW_NAVBAR, 0, UserHandle.USER_CURRENT) != 0;
-            boolean checked = myPageBundle.containsKey(DISABLE_NAV_KEYS) ?
-                    myPageBundle.getBoolean(DISABLE_NAV_KEYS) :
-                    enabled;
+            boolean checked = myPageBundle.containsKey(DISABLE_NAV_KEYS) ? myPageBundle.getBoolean(DISABLE_NAV_KEYS)
+                    : enabled;
             mNavKeys.setChecked(checked);
             myPageBundle.putBoolean(DISABLE_NAV_KEYS, checked);
         }
