@@ -17,6 +17,7 @@
 
 package org.lineageos.setupwizard;
 
+import static android.util.Config.LOGV;
 import static android.view.View.INVISIBLE;
 
 import static com.google.android.setupcompat.util.ResultCodes.RESULT_ACTIVITY_NOT_FOUND;
@@ -35,6 +36,7 @@ import static org.lineageos.setupwizard.SetupWizardApp.LOGV;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
@@ -43,17 +45,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.android.settingslib.Utils;
 
@@ -92,6 +102,8 @@ public abstract class BaseSetupWizardActivity extends Activity implements Naviga
     protected int mResultCode = 0;
     private Intent mResultData;
 
+
+
     private final BroadcastReceiver finishReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -105,6 +117,7 @@ public abstract class BaseSetupWizardActivity extends Activity implements Naviga
         }
     };
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (LOGV) {
@@ -118,7 +131,19 @@ public abstract class BaseSetupWizardActivity extends Activity implements Naviga
         if (mNavigationBar != null) {
             mNavigationBar.setNavigationBarListener(this);
         }
+
     }
+
+    private class DataReceiver {
+        @JavascriptInterface
+        public void setImage(String data) {
+            Log.d("WebView_img", data);
+            byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            runOnUiThread(() -> imageView.setImageBitmap(decodedByte));
+        }
+    }
+
 
     @Override
     protected void onStart() {

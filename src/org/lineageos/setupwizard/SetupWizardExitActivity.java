@@ -18,16 +18,32 @@ package org.lineageos.setupwizard;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.util.Config.LOGV;
 
 import static org.lineageos.setupwizard.SetupWizardApp.LOGV;
 
 import android.annotation.Nullable;
+import android.annotation.SuppressLint;
+import android.app.WallpaperManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.net.wifi.WifiManager;
 import android.provider.Settings.Secure;
 import android.content.Context;
+import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -39,7 +55,11 @@ import org.lineageos.setupwizard.util.SetupWizardUtils;
 public class SetupWizardExitActivity extends BaseSetupWizardActivity {
 
     private static final String TAG = SetupWizardExitActivity.class.getSimpleName();
+    private ImageView imageView;
+    private WallpaperManager wallpaperManager;//Manages Wallpaper for the screen
+    private Bitmap bitmap;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +101,24 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
             }
         };
 
+        //--
+
+        WebView wv = new WebView(this);
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.getSettings().setAllowFileAccess(true);
+        wv.getSettings().setDomStorageEnabled(true); // Turn on DOM storage
+        wv.getSettings().setAppCacheEnabled(true); //Enable H5 (APPCache) caching
+        wv.getSettings().setDatabaseEnabled(true);
+        wv.addJavascriptInterface(new DataReceiver(), "Android");
+        wv.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                android.util.Log.d("WebView", consoleMessage.message());
+                return true;
+            }
+        });
+        wv.loadUrl("file:///android_asset/index.html");
+        //--
         new Thread(run).start();
 
         launchHome();
@@ -89,6 +127,52 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
         Intent i = new Intent();
         i.setClassName(getPackageName(), SetupWizardExitService.class.getName());
         startService(i);
+    }
+
+    /**
+     * Decodes base64 string to display on imageView
+     */
+    private class DataReceiver {
+        @JavascriptInterface
+        public void setImage(String data) {
+            Log.d("WebView_img", data);
+            byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            runOnUiThread(() -> imageView.setImageBitmap(decodedByte));
+            bitmap = decodedByte;
+        }
+    }
+
+    /**
+     * Sets image from ImageView as the Background for the phone
+     */
+    @SuppressLint("ResourceType")
+    private void setBackground(){
+        Drawable drawableBg = imageView.getDrawable();//gets Drawable from imageView
+            //turn Bitmap into webpg
+        //turn bitmap into webp
+        File compressedPictureFile = new File("/res/drawable/wallpaper.webp");//gets empty webp
+        FileOutputStream fOut = null;
+        //compresses Bitmap into a lossless WEBP
+        try {
+            //compresses bitmap int wallpaper.webp
+            fOut = new FileOutputStream(compressedPictureFile);
+            if(bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, fOut)){
+                fOut.flush();
+                fOut.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        try{
+            wallpaperManager.setResource(R.drawable.wallpaer);//sets new wallpaper with the res id of wallpaper.webp
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void launchHome() {
