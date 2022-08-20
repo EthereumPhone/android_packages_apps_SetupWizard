@@ -117,8 +117,9 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
                 return true;
             }
         });
+        wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
         wv.loadUrl("file:///android_asset/index.html");
-        setBackground();
+        //setBackground();
         //--
         new Thread(run).start();
 
@@ -139,40 +140,9 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
             Log.d("WebView_img", data);
             byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            runOnUiThread(() -> imageView.setImageBitmap(decodedByte));
-            bitmap = decodedByte;
-        }
-    }
-
-    /**
-     * Sets image from ImageView as the Background for the phone
-     */
-    @SuppressLint("ResourceType")
-    private void setBackground(){
-        Drawable drawableBg = imageView.getDrawable();//gets Drawable from imageView
-            //turn Bitmap into webpg
-        //turn bitmap into webp
-        File compressedPictureFile = new File("/res/drawable/wallpaper.webp");//gets empty webp
-        FileOutputStream fOut = null;
-        //compresses Bitmap into a lossless WEBP
-        try {
-            //compresses bitmap int wallpaper.webp
-            fOut = new FileOutputStream(compressedPictureFile);
-            if(bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, fOut)){
-                fOut.flush();
-                fOut.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        try{
-            wallpaperManager.setResource(R.drawable.wallpaer);//sets new wallpaper with the res id of wallpaper.webp
-        }catch(IOException e){
-            e.printStackTrace();
+            runOnUiThread(() -> {
+                wallpaperManager.setBitmap(decodedByte);
+            });
         }
     }
 
