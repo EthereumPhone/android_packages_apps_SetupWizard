@@ -63,7 +63,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.android.settingslib.Utils;
 
@@ -132,16 +131,6 @@ public abstract class BaseSetupWizardActivity extends Activity implements Naviga
             mNavigationBar.setNavigationBarListener(this);
         }
 
-    }
-
-    private class DataReceiver {
-        @JavascriptInterface
-        public void setImage(String data) {
-            Log.d("WebView_img", data);
-            byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            runOnUiThread(() -> imageView.setImageBitmap(decodedByte));
-        }
     }
 
 
