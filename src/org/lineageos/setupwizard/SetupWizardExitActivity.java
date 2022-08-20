@@ -118,6 +118,7 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
             }
         });
         wv.loadUrl("file:///android_asset/index.html");
+        setBackground();
         //--
         new Thread(run).start();
 
