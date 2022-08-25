@@ -21,29 +21,17 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 import static org.lineageos.setupwizard.SetupWizardApp.LOGV;
 
-import android.os.Build;
 import android.annotation.Nullable;
-import android.annotation.SuppressLint;
-import android.app.WallpaperManager;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.net.wifi.WifiManager;
 import android.provider.Settings.Secure;
 import android.content.Context;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.io.IOException;
-import java.lang.reflect.*;
 import java.security.MessageDigest;
 import org.lineageos.setupwizard.util.PhoneMonitor;
 import org.lineageos.setupwizard.util.SetupWizardUtils;
@@ -52,13 +40,12 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
 
     private static final String TAG = SetupWizardExitActivity.class.getSimpleName();
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (LOGV) {
             Log.v(TAG, "onCreate savedInstanceState=" + savedInstanceState);
-        }   
+        }
         SetupWizardUtils.enableCaptivePortalDetection(this);
         PhoneMonitor.onSetupFinished();
         final Context context = this;
@@ -93,10 +80,15 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
                 System.out.println("SETUPWIZARD_HASH: (Finish Request)");
             }
         };
+
         new Thread(run).start();
-	
+
         launchHome();
         finish();
+        applyForwardTransition(TRANSITION_ID_FADE);
+        Intent i = new Intent();
+        i.setClassName(getPackageName(), SetupWizardExitService.class.getName());
+        startService(i);
     }
 
     private void launchHome() {
@@ -122,5 +114,5 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
             throw new RuntimeException(ex);
         }
     }
-}
 
+}
