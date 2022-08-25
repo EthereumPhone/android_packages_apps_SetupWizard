@@ -40,6 +40,7 @@ import android.content.SharedPreferences;
 import android.content.om.IOverlayManager;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +56,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.util.Base64;
+import android.os.Build;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -122,7 +124,6 @@ public class FinishActivity extends BaseSetupWizardActivity {
     private class DataReceiver {
         @JavascriptInterface
         public void setImage(String data) {
-            Log.d("WebView_img", data);
             byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             /**runOnUiThread(() -> {
