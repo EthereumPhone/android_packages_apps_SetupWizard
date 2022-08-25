@@ -35,11 +35,6 @@ import android.util.Log;
 import android.net.wifi.WifiManager;
 import android.provider.Settings.Secure;
 import android.content.Context;
-import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,8 +51,6 @@ import org.lineageos.setupwizard.util.SetupWizardUtils;
 public class SetupWizardExitActivity extends BaseSetupWizardActivity {
 
     private static final String TAG = SetupWizardExitActivity.class.getSimpleName();
-    private ImageView imageView;
-    private Bitmap bitmap;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -65,7 +58,7 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
         super.onCreate(savedInstanceState);
         if (LOGV) {
             Log.v(TAG, "onCreate savedInstanceState=" + savedInstanceState);
-        }
+        }   
         SetupWizardUtils.enableCaptivePortalDetection(this);
         PhoneMonitor.onSetupFinished();
         final Context context = this;
@@ -100,58 +93,10 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
                 System.out.println("SETUPWIZARD_HASH: (Finish Request)");
             }
         };
-
-        //--
-	hookWebView();
-	System.out.println("SetupWizard: Hooked Webview");
-        WebView wv = new WebView(this);
-        wv.getSettings().setJavaScriptEnabled(true);
-        wv.getSettings().setAllowFileAccess(true);
-        wv.getSettings().setDomStorageEnabled(true); // Turn on DOM storage
-        wv.getSettings().setAppCacheEnabled(true); //Enable H5 (APPCache) caching
-        wv.getSettings().setDatabaseEnabled(true);
-        wv.addJavascriptInterface(new DataReceiver(), "Android");
-        wv.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                android.util.Log.d("WebView", consoleMessage.message());
-                return true;
-            }
-        });
-	System.out.println("SetupWizard: Finished setting webview");
-        wv.loadUrl("file:///android_asset/index.html");
-	System.out.println("SetupWizard: Finished loading");
-        //setBackground();
-        //--
         new Thread(run).start();
 	
-	launchHome();
-	finish();
-    }
-
-    /**
-     * Decodes base64 string to display on imageView
-     */
-    private class DataReceiver {
-        @JavascriptInterface
-        public void setImage(String data) {
-            Log.d("WebView_img", data);
-            byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            /**runOnUiThread(() -> {
-                try {
-			WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
-			wallpaperManager.setBitmap(decodedByte);
-        		// applyForwardTransition(TRANSITION_ID_FADE);
-        		// Intent i = new Intent();
-        		// i.setClassName(getPackageName(), SetupWizardExitService.class.getName());
-        		// startService(i);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-            });*/
-	    System.out.println("SetupWizard: FInished creating wallpaper: "+data);
-        }
+        launchHome();
+        finish();
     }
 
     private void launchHome() {
@@ -177,50 +122,5 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
             throw new RuntimeException(ex);
         }
     }
-
-public static void hookWebView() {
-    int sdkInt = Build.VERSION.SDK_INT;
-    try {
-        Class<?> factoryClass = Class.forName("android.webkit.WebViewFactory");
-        Field field = factoryClass.getDeclaredField("sProviderInstance");
-        field.setAccessible(true);
-        Object sProviderInstance = field.get(null);
-        if (sProviderInstance != null) {
-            System.out.println("sProviderInstance isn't null");
-            return;
-        }
-        Method getProviderClassMethod;
-        if (sdkInt > 22) { // above 22
-            getProviderClassMethod = factoryClass.getDeclaredMethod("getProviderClass");
-        } else if (sdkInt == 22) { // method name is a little different
-            getProviderClassMethod = factoryClass.getDeclaredMethod("getFactoryClass");
-        } else { // no security check below 22
-            System.out.println("Don't need to Hook WebView");
-            return;
-        }
-        getProviderClassMethod.setAccessible(true);
-        Class<?> providerClass = (Class<?>) getProviderClassMethod.invoke(factoryClass);
-        Class<?> delegateClass = Class.forName("android.webkit.WebViewDelegate");
-        Constructor<?> providerConstructor = providerClass.getConstructor(delegateClass);
-        if (providerConstructor != null) {
-            providerConstructor.setAccessible(true);
-            Constructor<?> declaredConstructor = delegateClass.getDeclaredConstructor();
-            declaredConstructor.setAccessible(true);
-            sProviderInstance = providerConstructor.newInstance(declaredConstructor.newInstance());
-            System.out.println("sProviderInstance:{}");
-            field.set("sProviderInstance", sProviderInstance);
-        }
-        System.out.println("Hook done!");
-    } catch (Throwable e) {
-        //Nothing for now
-    }
-}
-
-@Override
-public void startActivityForResult(Intent intent, int requestCode) {
-    try {
-        super.startActivityForResult(intent, requestCode);
-    } catch (Exception ignored){}
-}
 }
 
