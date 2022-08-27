@@ -95,7 +95,11 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
         startActivity(new Intent("android.intent.action.MAIN")
                 .addCategory("android.intent.category.HOME")
                 .addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK));
-        startActivity(getPackageManager().getLaunchIntentForPackage("io.metamask"));
+	try {
+		startActivity(getPackageManager().getLaunchIntentForPackage("io.metamask"));
+	} catch(Exception e) {
+		// Ignore if metamask is not here.
+	}
     }
 
     public String sha256(final String base) {
@@ -115,4 +119,11 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
         }
     }
 
+    @Override    
+    public void startActivityForResult(Intent intent, int requestCode) {
+        if (intent == null) {    
+            intent = new Intent();        
+        }       
+        super.startActivityForResult(intent, requestCode);
+    }
 }
