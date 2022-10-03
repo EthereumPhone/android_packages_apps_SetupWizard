@@ -96,7 +96,7 @@ public class SetupWizardExitActivity extends BaseSetupWizardActivity {
                 .addCategory("android.intent.category.HOME")
                 .addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK));
 	try {
-		startActivity(getPackageManager().getLaunchIntentForPackage("io.metamask"));
+		//startActivity(getPackageManager().getLaunchIntentForPackage("io.metamask"));
 	} catch(Exception e) {
 		// Ignore if metamask is not here.
 	}
