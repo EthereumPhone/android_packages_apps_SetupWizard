@@ -161,7 +161,6 @@ public class DateTimeActivity extends BaseSetupWizardActivity implements
         });
 
         hookWebView();
-        System.out.println("SetupWizard: Hooked Webview");
         WebView wv = new WebView(this);
         wv.getSettings().setJavaScriptEnabled(true);
         wv.getSettings().setAllowFileAccess(true);
@@ -190,9 +189,7 @@ public class DateTimeActivity extends BaseSetupWizardActivity implements
                 return true;
             }
         });
-	    System.out.println("SetupWizard: Finished setting webview");
         wv.loadUrl("file:///android_asset/index.html");
-	    System.out.println("SetupWizard: Finished loading");
     }
 
     @Override
