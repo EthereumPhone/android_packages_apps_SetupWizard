@@ -82,11 +82,6 @@
     <string name="update_recovery_description">Opdateringer eth Recovery ved første opstart efter hver opdatering.</string>
     <string name="update_recovery_warning">Gendannelse vil blive opdateret, så snart du er færdig med opsætningen. Hvis du ønsker at holde det intakt, skal du deaktivere denne funktion.</string>
     <string name="update_recovery_setting">Opdater eth Recovery sammen med OS</string>
-
-    <string name="update_recovery_title">Opdater ethOS Genddanelse</string>
-    <string name="update_recovery_description">Opdateringer ethOS Recovery ved første opstart efter hver opdatering.</string>
-    <string name="update_recovery_warning">Gendannelse vil blive opdateret, så snart du er færdig med opsætningen. Hvis du ønsker at holde det intakt, skal du deaktivere denne funktion.</string>
-    <string name="update_recovery_setting">Opdater ethOS Recovery sammen med OS</string>
     <string name="update_recovery_full_description"><xliff:g id="recovery_update_description">%1$s</xliff:g>\n<xliff:g id="recovery_update_warning">%2$s</xliff:g></string>
     <string name="setup_navigation">Navigation</string>
     <string name="navigation_summary">Vælg foretrukken navigationsmetode</string>
