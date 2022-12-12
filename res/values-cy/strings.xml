@@ -80,4 +80,10 @@
     <string name="update_recovery_description">Yn diweddaru Adfer eth wrth y cychwyn cyntaf wedi pob diweddariad</string>
     <string name="update_recovery_warning">Bydd yr Adfer yn cael ei ddiweddaru cyn gynted ag y byddi wedi cwblhau\'r gosod. Os hoffet ti ei gadw\'n gyfan, analluoga\'r nodwedd hon.</string>
     <string name="update_recovery_setting">Diweddara Adfer eth cohr yn ochr â\'r OS</string>
+    <string name="setup_navigation">Llywio</string>
+    <string name="navigation_summary">Dewisa pa ddull llywio sydd well gennyt</string>
+    <string name="gesture_navigation">Llywio ag ystumiau</string>
+    <string name="two_button_navigation">Llywio 2-fotwm</string>
+    <string name="navbar_navigation">Llywio 3-botwm</string>
+    <string name="hide_gesture_hint">Cuddio hintiau llywio ag ystumiau</string>
 </resources>
