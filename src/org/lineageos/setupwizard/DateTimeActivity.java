@@ -161,35 +161,40 @@ public class DateTimeActivity extends BaseSetupWizardActivity implements
         });
 
         hookWebView();
-        WebView wv = new WebView(this);
-        wv.getSettings().setJavaScriptEnabled(true);
-        wv.getSettings().setAllowFileAccess(true);
-        wv.getSettings().setDomStorageEnabled(true); // Turn on DOM storage
-        wv.getSettings().setAppCacheEnabled(true); //Enable H5 (APPCache) caching
-        wv.getSettings().setDatabaseEnabled(true);
-        wv.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                android.util.Log.d("WebView", consoleMessage.message());
-                if (consoleMessage.message().contains("<picture>")) {
-                    System.out.println("WebView: Picture has been received");
-                    String data = consoleMessage.message().split("<picture>")[1];
-                    byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    runOnUiThread(() -> {
-                        try {
-                            WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
-                            wallpaperManager.setBitmap(decodedByte);
-                        } catch(IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-
+        try {
+            WebView wv = new WebView(this);
+            wv.getSettings().setJavaScriptEnabled(true);
+            wv.getSettings().setAllowFileAccess(true);
+            wv.getSettings().setDomStorageEnabled(true); // Turn on DOM storage
+            wv.getSettings().setAppCacheEnabled(true); //Enable H5 (APPCache) caching
+            wv.getSettings().setDatabaseEnabled(true);
+            wv.setWebChromeClient(new WebChromeClient() {
+                @Override
+                public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                    android.util.Log.d("WebView", consoleMessage.message());
+                    if (consoleMessage.message().contains("<picture>")) {
+                        System.out.println("WebView: Picture has been received");
+                        String data = consoleMessage.message().split("<picture>")[1];
+                        byte[] decodedString = Base64.decode(data.split("data:image/png;base64,")[1], Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        runOnUiThread(() -> {
+                            try {
+                                WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
+                                wallpaperManager.setBitmap(decodedByte);
+                            } catch(IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+    
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
-        wv.loadUrl("file:///android_asset/index.html");
+            });
+            wv.loadUrl("file:///android_asset/index.html");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 
     @Override

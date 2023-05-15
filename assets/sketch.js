@@ -11,12 +11,12 @@ var maxSize = 200;
 
 var colorpalletes = [
 
-    ["#0081A7", "#00AFB9", "#FDFCDC", "#FED9B7", "#F07167"],
+    ["#0081A7", "#00AFB9", "#F07167", "#FFFD98", "#BDE4A7"],
     ["#FF595E", "#FFCA3A", "#8AC926", "#1982C4", "#6A4C93"],
     ["#4D5057", "#4E6E5D", "#4DA167", "#3BC14A", "#CFCFCF"],
-    ["#2C6E49", "#4C956C", "#FEFEE3", "#FFC9B9", "#D68C45"],
+    ["#2C6E49", "#4C956C", "#823329", "#FFC9B9", "#D68C45"],
     ["#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
-    ["#003049", "#D62828", "#F77F00", "#FCBF49", "#EAE2B7"],
+    ["#003049", "#D62828", "#F77F00", "#FCBF49", "#D0E37F"],
     ["#485696", "#E7E7E7", "#F9C784", "#FC7A1E", "#F24C00"],
     ["#F24C00", "#412234", "#6D466B", "#B49FCC", "#EAD7D7"],
     ["#2F323A", "#77567A", "#C47AC0", "#E39EC1", "#DEBAC0"],
@@ -28,15 +28,16 @@ var colorpalletes = [
     ["#9CF6F6", "#F3C98B", "#DAA588", "#C46D5E", "#F56960"],
     ["#2A0800", "#775144", "#C09891", "#BEA8A7", "#F4DBD8"],
     ["#442F38", "#9A9B73", "#C6B38E", "#E7F9A9", "#3D0814"],
-    ["#C1B4AE", "#BE5A38", "#353238", "#92140C", "#BE7C4D"],
-    ["#BBB193", "#F6F0ED", "#7EA8BE", "#C2948A", "#28536B"],
+    ["#ab9f98", "#BE5A38", "#353238", "#92140C", "#BE7C4D"],
+    ["#3c1642", "#086375", "#1dd3b0", "#affc41", "#b2ff9e"],
     ["#5f0f40", "#9a031e", "#fb8b24", "#e36414", "#0f4c5c"],
-    ["#780000", "#c1121f", "#fdf0d5", "#003049", "#669bbc"],
-    ["#3d5a80", "#98c1d9", "#e0fbfc", "#ee6c4d", "#293241"],
-    ["#011627", "#fdfffc", "#2ec4b6", "#e71d36", "#ff9f1c"],
-    ["#05668d", "#028090", "#00a896", "#02c39a", "#f0f3bd"],
+    ["#780000", "#F0A202", "#0C5278", "#003049", "#669bbc"],
+    ["#3d5a80", "#98c1d9", "#EFD28D", "#ee6c4d", "#293241"],
+    ["#011627", "#F4E409", "#2ec4b6", "#e71d36", "#ff9f1c"],
+    ["#321325", "#5f0f40", "#9a031e", "#cb793a", "#fcdc4d"],
     ["#090809", "#f40000", "#f44e3f", "#f4796b", "#f4998d"],
     ["#4f000b", "#720026", "#ce4257", "#ff7f51", "#ff9b54"],
+    ["#fe5826", "#4b9d97", "#0d7876", "#076764", "#d8b593"],
 
 ]
 var randomPallet;
@@ -63,7 +64,7 @@ function setup() {
     ///console.log("Random", parseInt(Math.random() * colorpalletes.length));
     randomPallet = colorpalletes[parseInt(Math.random() * colorpalletes.length)];
     //console.log("arr", randomPallet);
-    var bgIndex = parseInt(Math.random() * randomPallet.length);
+    var bgIndex = parseInt(Math.random() * (randomPallet.length));
     //console.log("bg", bgIndex)
     background(randomPallet[bgIndex]);
     //console.log("bgIndex", bgIndex);
@@ -125,7 +126,7 @@ function draw() {
 
     noLoop();
     console.log("Image done")
-    console.log("<picture>"+document.getElementById("defaultCanvas0").toDataURL())
+    console.log("<picture>" + document.getElementById("defaultCanvas0").toDataURL())
 }
 
 function fillLogo(_x, _y) {
